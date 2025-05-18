@@ -1,0 +1,68 @@
+<mat-toolbar color="primary">
+  <a mat-button routerLink="/" class="app-title">Banking System</a>
+  
+  <!-- Navigation links for authenticated users -->
+  <ng-container *ngIf="currentUser">
+    <a mat-button routerLink="/dashboard" routerLinkActive="active-link">
+      <mat-icon>dashboard</mat-icon> Dashboard
+    </a>
+    
+    <a mat-button routerLink="/accounts" routerLinkActive="active-link">
+      <mat-icon>account_balance</mat-icon> Accounts
+    </a>
+    
+    <button mat-button [matMenuTriggerFor]="customersMenu">
+      <mat-icon>people</mat-icon> Customers <mat-icon>arrow_drop_down</mat-icon>
+    </button>
+    <mat-menu #customersMenu="matMenu">
+      <a mat-menu-item routerLink="/customers" routerLinkActive="active-link">
+        <mat-icon>search</mat-icon> Search customers
+      </a>
+      <a mat-menu-item routerLink="/new-customer" routerLinkActive="active-link">
+        <mat-icon>person_add</mat-icon> New customer
+      </a>
+    </mat-menu>
+    
+    <!-- Admin only section -->
+    <ng-container *ngIf="isAdmin()">
+      <button mat-button [matMenuTriggerFor]="adminMenu">
+        <mat-icon>admin_panel_settings</mat-icon> Administration <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #adminMenu="matMenu">
+        <a mat-menu-item routerLink="/admin/users" routerLinkActive="active-link">
+          <mat-icon>manage_accounts</mat-icon> Manage Users
+        </a>
+        <a mat-menu-item routerLink="/admin/settings" routerLinkActive="active-link">
+          <mat-icon>settings</mat-icon> System Settings
+        </a>
+      </mat-menu>
+    </ng-container>
+  </ng-container>
+  
+  <span class="spacer"></span>
+  
+  <!-- User section -->
+  <ng-container *ngIf="!currentUser">
+    <a mat-button routerLink="/login" routerLinkActive="active-link">
+      <mat-icon>login</mat-icon> Login
+    </a>
+    <a mat-raised-button color="accent" routerLink="/register" routerLinkActive="active-link">
+      <mat-icon>person_add</mat-icon> Register
+    </a>
+  </ng-container>
+  
+  <ng-container *ngIf="currentUser">
+    <button mat-button [matMenuTriggerFor]="userMenu">
+      <mat-icon>account_circle</mat-icon> {{ currentUser.username }}
+    </button>
+    <mat-menu #userMenu="matMenu">
+      <a mat-menu-item routerLink="/change-password">
+        <mat-icon>password</mat-icon> Change Password
+      </a>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon> Logout
+      </button>
+    </mat-menu>
+  </ng-container>
+</mat-toolbar>
