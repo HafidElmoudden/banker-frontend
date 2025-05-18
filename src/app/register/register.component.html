@@ -1,0 +1,112 @@
+<div class="container mt-5">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white text-center">
+          <h4>Register for Banking System</h4>
+        </div>
+        <div class="card-body">
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+          <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+          </div>
+          
+          <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="username" class="form-label">Username</label>
+              <input 
+                type="text" 
+                id="username" 
+                formControlName="username" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': registerForm.controls['username'].touched && registerForm.controls['username'].invalid}"
+                placeholder="Choose a username"
+                autocomplete="username"
+              >
+              <div *ngIf="registerForm.controls['username'].touched && registerForm.controls['username'].errors?.['required']" class="invalid-feedback">
+                Username is required
+              </div>
+              <div *ngIf="registerForm.controls['username'].touched && registerForm.controls['username'].errors?.['minlength']" class="invalid-feedback">
+                Username must be at least 4 characters
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="email" class="form-label">Email</label>
+              <input 
+                type="email" 
+                id="email" 
+                formControlName="email" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': registerForm.controls['email'].touched && registerForm.controls['email'].invalid}"
+                placeholder="Enter your email"
+                autocomplete="email"
+              >
+              <div *ngIf="registerForm.controls['email'].touched && registerForm.controls['email'].errors?.['required']" class="invalid-feedback">
+                Email is required
+              </div>
+              <div *ngIf="registerForm.controls['email'].touched && registerForm.controls['email'].errors?.['email']" class="invalid-feedback">
+                Please enter a valid email address
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="password" class="form-label">Password</label>
+              <input 
+                type="password" 
+                id="password" 
+                formControlName="password" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': registerForm.controls['password'].touched && registerForm.controls['password'].invalid}"
+                placeholder="Choose a password"
+                autocomplete="new-password"
+              >
+              <div *ngIf="registerForm.controls['password'].touched && registerForm.controls['password'].errors?.['required']" class="invalid-feedback">
+                Password is required
+              </div>
+              <div *ngIf="registerForm.controls['password'].touched && registerForm.controls['password'].errors?.['minlength']" class="invalid-feedback">
+                Password must be at least 6 characters
+              </div>
+            </div>
+            
+            <div class="mb-3">
+              <label for="confirmPassword" class="form-label">Confirm Password</label>
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                formControlName="confirmPassword" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': registerForm.controls['confirmPassword'].touched && registerForm.controls['confirmPassword'].invalid}"
+                placeholder="Confirm your password"
+                autocomplete="new-password"
+              >
+              <div *ngIf="registerForm.controls['confirmPassword'].touched && registerForm.controls['confirmPassword'].errors?.['required']" class="invalid-feedback">
+                Please confirm your password
+              </div>
+              <div *ngIf="registerForm.controls['confirmPassword'].touched && registerForm.controls['confirmPassword'].errors?.['passwordMismatch']" class="invalid-feedback">
+                Passwords do not match
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                [disabled]="registerForm.invalid || isLoading"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                Register
+              </button>
+            </div>
+          </form>
+          
+          <div class="mt-3 text-center">
+            <p>Already have an account? <a routerLink="/login">Login</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

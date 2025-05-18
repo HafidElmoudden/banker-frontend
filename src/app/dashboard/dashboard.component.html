@@ -1,0 +1,257 @@
+<div class="container-fluid mt-3">
+  <div class="row mb-4">
+    <div class="col">
+      <h2 class="text-primary">Banking Dashboard</h2>
+      <p class="text-muted">Welcome to the banking system dashboard</p>
+    </div>
+  </div>
+
+  <!-- Loading spinner -->
+  <div *ngIf="isLoading" class="text-center my-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p class="mt-2">Loading dashboard data...</p>
+  </div>
+
+  <!-- Error message -->
+  <div *ngIf="error" class="alert alert-danger">
+    {{ error }}
+  </div>
+
+  <!-- Main dashboard content -->
+  <div *ngIf="!isLoading && !error">
+    <!-- Statistics Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card bg-primary text-white h-100">
+          <div class="card-body">
+            <h5 class="card-title">Total Customers</h5>
+            <h2 class="display-4">{{ statistics.totalCustomers }}</h2>
+          </div>
+          <div class="card-footer d-flex">
+            <span>View Details</span>
+            <span class="ms-auto">
+              <i class="bi bi-people"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card bg-success text-white h-100">
+          <div class="card-body">
+            <h5 class="card-title">Total Accounts</h5>
+            <h2 class="display-4">{{ statistics.totalAccounts }}</h2>
+          </div>
+          <div class="card-footer d-flex">
+            <span>View Details</span>
+            <span class="ms-auto">
+              <i class="bi bi-credit-card"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card bg-warning text-dark h-100">
+          <div class="card-body">
+            <h5 class="card-title">Total Transactions</h5>
+            <h2 class="display-4">{{ statistics.totalTransactions }}</h2>
+          </div>
+          <div class="card-footer d-flex">
+            <span>View Details</span>
+            <span class="ms-auto">
+              <i class="bi bi-arrow-left-right"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card bg-info text-white h-100">
+          <div class="card-body">
+            <h5 class="card-title">Total Balance</h5>
+            <h2 class="display-4">${{ statistics.totalBalance | number:'1.2-2' }}</h2>
+          </div>
+          <div class="card-footer d-flex">
+            <span>View Details</span>
+            <span class="ms-auto">
+              <i class="bi bi-cash-stack"></i>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Charts Row -->
+    <div class="row mb-4" *ngIf="!isLoading && !error">
+      <!-- Account Type Distribution Chart -->
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Account Type Distribution</h5>
+          </div>
+          <div class="card-body" style="height: 300px; position: relative;">
+            <canvas id="accountTypeChart"></canvas>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Monthly Operations Chart -->
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Monthly Operations</h5>
+          </div>
+          <div class="card-body" style="height: 300px; position: relative;">
+            <canvas id="monthlyOperationsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Transaction Trends Chart -->
+    <div class="row mb-4" *ngIf="!isLoading && !error">
+      <div class="col-md-12 mb-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Transaction Trends</h5>
+          </div>
+          <div class="card-body" style="height: 250px; position: relative;">
+            <canvas id="transactionTrendsChart"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="row mb-4">
+      <!-- Top Customers Table -->
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Top Customers</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Customer</th>
+                    <th>Email</th>
+                    <th>Total Accounts</th>
+                    <th>Total Balance</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let customer of topCustomers">
+                    <td>{{ customer.name }}</td>
+                    <td>{{ customer.email }}</td>
+                    <td>{{ customer.accountCount }}</td>
+                    <td>${{ customer.totalBalance | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr *ngIf="topCustomers.length === 0">
+                    <td colspan="4" class="text-center">No customer data available</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Transactions -->
+      <div class="col-md-6 mb-4">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Recent Transactions</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Account</th>
+                    <th>Type</th>
+                    <th>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let transaction of recentTransactions">
+                    <td>{{ transaction.date | date:'short' }}</td>
+                    <td>{{ transaction.accountId }}</td>
+                    <td>
+                      <span [ngClass]="{
+                        'badge bg-success': transaction.type === 'CREDIT',
+                        'badge bg-danger': transaction.type === 'DEBIT',
+                        'badge bg-info': transaction.type === 'TRANSFER'
+                      }">{{ transaction.type }}</span>
+                    </td>
+                    <td [ngClass]="{
+                      'text-success': transaction.type === 'CREDIT',
+                      'text-danger': transaction.type === 'DEBIT'
+                    }">{{ transaction.type === 'CREDIT' ? '+' : '-' }}${{ transaction.amount | number:'1.2-2' }}</td>
+                  </tr>
+                  <tr *ngIf="recentTransactions.length === 0">
+                    <td colspan="4" class="text-center">No transaction data available</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions Section -->
+    <div class="row mb-4">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header bg-light">
+            <h5 class="card-title mb-0">Quick Actions</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-3 mb-3">
+                <div class="d-grid">
+                  <a routerLink="/customers" class="btn btn-outline-primary">
+                    <i class="bi bi-people me-2"></i>Manage Customers
+                  </a>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="d-grid">
+                  <a routerLink="/accounts" class="btn btn-outline-success">
+                    <i class="bi bi-credit-card me-2"></i>Manage Accounts
+                  </a>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="d-grid">
+                  <a routerLink="/new-customer" class="btn btn-outline-info">
+                    <i class="bi bi-person-plus me-2"></i>New Customer
+                  </a>
+                </div>
+              </div>
+              <div class="col-md-3 mb-3">
+                <div class="d-grid">
+                  <a routerLink="/new-account" class="btn btn-outline-secondary">
+                    <i class="bi bi-plus-circle me-2"></i>New Account
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="row mt-2">
+              <div class="col-md-12 mb-3">
+                <div class="d-grid">
+                  <a routerLink="/change-password" class="btn btn-outline-warning">
+                    <i class="bi bi-key me-2"></i>Change Password
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
