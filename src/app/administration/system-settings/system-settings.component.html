@@ -1,0 +1,201 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>System Settings</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <!-- Loading Spinner -->
+      <div *ngIf="isLoading" class="spinner-container">
+        <mat-spinner diameter="40"></mat-spinner>
+      </div>
+
+      <!-- Settings Tabs -->
+      <mat-tab-group *ngIf="!isLoading">
+        <!-- General Settings Tab -->
+        <mat-tab label="General Settings">
+          <div class="settings-form">
+            <form [formGroup]="generalSettingsForm" (ngSubmit)="saveGeneralSettings()">
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Bank Name</mat-label>
+                    <input matInput formControlName="bankName" required>
+                    <mat-error *ngIf="generalSettingsForm.get('bankName')?.hasError('required')">
+                      Bank name is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Bank Code</mat-label>
+                    <input matInput formControlName="bankCode" required>
+                    <mat-error *ngIf="generalSettingsForm.get('bankCode')?.hasError('required')">
+                      Bank code is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Default Currency</mat-label>
+                    <mat-select formControlName="defaultCurrency" required>
+                      <mat-option value="MAD">Moroccan Dirham (MAD)</mat-option>
+                      <mat-option value="USD">US Dollar (USD)</mat-option>
+                      <mat-option value="EUR">Euro (EUR)</mat-option>
+                      <mat-option value="GBP">British Pound (GBP)</mat-option>
+                      <mat-option value="JPY">Japanese Yen (JPY)</mat-option>
+                      <mat-option value="CAD">Canadian Dollar (CAD)</mat-option>
+                    </mat-select>
+                    <mat-error *ngIf="generalSettingsForm.get('defaultCurrency')?.hasError('required')">
+                      Default currency is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Support Email</mat-label>
+                    <input matInput formControlName="supportEmail" required type="email">
+                    <mat-error *ngIf="generalSettingsForm.get('supportEmail')?.hasError('required')">
+                      Support email is required
+                    </mat-error>
+                    <mat-error *ngIf="generalSettingsForm.get('supportEmail')?.hasError('email')">
+                      Please enter a valid email
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Support Phone</mat-label>
+                    <input matInput formControlName="supportPhone" required>
+                    <mat-error *ngIf="generalSettingsForm.get('supportPhone')?.hasError('required')">
+                      Support phone is required
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-slide-toggle formControlName="maintenanceMode" color="warn">
+                    Maintenance Mode
+                  </mat-slide-toggle>
+                  <p *ngIf="generalSettingsForm.get('maintenanceMode')?.value" class="text-danger mt-2">
+                    <small>When enabled, only administrators can access the system.</small>
+                  </p>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="generalSettingsForm.invalid">
+                  Save General Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+
+        <!-- Security Settings Tab -->
+        <mat-tab label="Security Settings">
+          <div class="settings-form">
+            <form [formGroup]="securitySettingsForm" (ngSubmit)="saveSecuritySettings()">
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Session Timeout (minutes)</mat-label>
+                    <input matInput formControlName="sessionTimeoutMinutes" required type="number">
+                    <mat-error *ngIf="securitySettingsForm.get('sessionTimeoutMinutes')?.hasError('required')">
+                      Session timeout is required
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('sessionTimeoutMinutes')?.hasError('min')">
+                      Minimum value is 5 minutes
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('sessionTimeoutMinutes')?.hasError('max')">
+                      Maximum value is 120 minutes
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Max Login Attempts</mat-label>
+                    <input matInput formControlName="maxLoginAttempts" required type="number">
+                    <mat-error *ngIf="securitySettingsForm.get('maxLoginAttempts')?.hasError('required')">
+                      Max login attempts is required
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('maxLoginAttempts')?.hasError('min')">
+                      Minimum value is 3 attempts
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('maxLoginAttempts')?.hasError('max')">
+                      Maximum value is 10 attempts
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Password Expiry (days)</mat-label>
+                    <input matInput formControlName="passwordExpiryDays" required type="number">
+                    <mat-error *ngIf="securitySettingsForm.get('passwordExpiryDays')?.hasError('required')">
+                      Password expiry is required
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('passwordExpiryDays')?.hasError('min')">
+                      Minimum value is 30 days
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('passwordExpiryDays')?.hasError('max')">
+                      Maximum value is 365 days
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="col-md-6">
+                  <mat-form-field appearance="outline" class="w-100">
+                    <mat-label>Minimum Password Length</mat-label>
+                    <input matInput formControlName="minimumPasswordLength" required type="number">
+                    <mat-error *ngIf="securitySettingsForm.get('minimumPasswordLength')?.hasError('required')">
+                      Minimum password length is required
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('minimumPasswordLength')?.hasError('min')">
+                      Minimum value is 6 characters
+                    </mat-error>
+                    <mat-error *ngIf="securitySettingsForm.get('minimumPasswordLength')?.hasError('max')">
+                      Maximum value is 20 characters
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div class="row">
+                <div class="col-md-6">
+                  <mat-slide-toggle formControlName="requireSpecialCharacters" color="primary">
+                    Require Special Characters
+                  </mat-slide-toggle>
+                </div>
+                <div class="col-md-6">
+                  <mat-slide-toggle formControlName="requireNumbers" color="primary">
+                    Require Numbers
+                  </mat-slide-toggle>
+                </div>
+              </div>
+
+              <div class="row mt-3">
+                <div class="col-md-6">
+                  <mat-slide-toggle formControlName="twoFactorAuthRequired" color="primary">
+                    Require Two-Factor Authentication
+                  </mat-slide-toggle>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button mat-raised-button color="primary" type="submit" [disabled]="securitySettingsForm.invalid">
+                  Save Security Settings
+                </button>
+              </div>
+            </form>
+          </div>
+        </mat-tab>
+      </mat-tab-group>
+    </mat-card-content>
+  </mat-card>
+</div> 
