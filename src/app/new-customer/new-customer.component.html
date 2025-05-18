@@ -1,0 +1,101 @@
+<div class="container mt-3">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card shadow">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h5 class="mb-0">Add New Customer</h5>
+          <a routerLink="/customers" class="btn btn-light btn-sm">
+            <i class="bi bi-arrow-left me-1"></i>Back to Customers
+          </a>
+        </div>
+        <div class="card-body">
+          <!-- Error message -->
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            {{ errorMessage }}
+          </div>
+
+          <!-- Success message -->
+          <div *ngIf="successMessage" class="alert alert-success">
+            {{ successMessage }}
+          </div>
+
+          <form [formGroup]="newCustomerFormGroup" (ngSubmit)="handleSaveCustomer()">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name <span class="text-danger">*</span></label>
+              <input 
+                type="text" 
+                id="name" 
+                formControlName="name" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': newCustomerFormGroup.controls['name'].touched && newCustomerFormGroup.controls['name'].invalid}"
+                placeholder="Enter customer name"
+              >
+              <div class="invalid-feedback" *ngIf="newCustomerFormGroup.controls['name'].touched && newCustomerFormGroup.controls['name'].errors?.['required']">
+                Name is required
+              </div>
+              <div class="invalid-feedback" *ngIf="newCustomerFormGroup.controls['name'].touched && newCustomerFormGroup.controls['name'].errors?.['minlength']">
+                Name must be at least 4 characters
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input 
+                type="email" 
+                id="email" 
+                formControlName="email" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': newCustomerFormGroup.controls['email'].touched && newCustomerFormGroup.controls['email'].invalid}"
+                placeholder="Enter customer email"
+              >
+              <div class="invalid-feedback" *ngIf="newCustomerFormGroup.controls['email'].touched && newCustomerFormGroup.controls['email'].errors?.['required']">
+                Email is required
+              </div>
+              <div class="invalid-feedback" *ngIf="newCustomerFormGroup.controls['email'].touched && newCustomerFormGroup.controls['email'].errors?.['email']">
+                Please enter a valid email address
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="phone" class="form-label">Phone</label>
+              <input 
+                type="tel" 
+                id="phone" 
+                formControlName="phone" 
+                class="form-control" 
+                [ngClass]="{'is-invalid': newCustomerFormGroup.controls['phone'].touched && newCustomerFormGroup.controls['phone'].invalid}"
+                placeholder="Enter customer phone number"
+              >
+              <div class="invalid-feedback" *ngIf="newCustomerFormGroup.controls['phone'].touched && newCustomerFormGroup.controls['phone'].errors?.['pattern']">
+                Please enter a valid phone number (10-15 digits)
+              </div>
+              <small class="form-text text-muted">Format: +1234567890 or 1234567890</small>
+            </div>
+
+            <div class="mb-3">
+              <label for="address" class="form-label">Address</label>
+              <textarea 
+                id="address" 
+                formControlName="address" 
+                class="form-control" 
+                rows="3"
+                placeholder="Enter customer address"
+              ></textarea>
+            </div>
+
+            <div class="d-grid gap-2">
+              <button 
+                type="submit" 
+                class="btn btn-primary" 
+                [disabled]="isLoading"
+              >
+                <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+                Save Customer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
