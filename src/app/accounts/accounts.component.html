@@ -1,0 +1,186 @@
+<div class="container mt-3">
+  <div class="card">
+    <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+      <h5 class="mb-0">Account Management</h5>
+      <a routerLink="/new-account" class="btn btn-light btn-sm">
+        <i class="bi bi-plus-circle me-1"></i>New Account
+      </a>
+    </div>
+    <div class="card-body">
+      <!-- Search Form -->
+      <div class="row mb-3">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-light">Search Accounts</div>
+            <div class="card-body">
+              <form [formGroup]="searchFormGroup" (ngSubmit)="searchAccounts()">
+                <div class="input-group">
+                  <input type="text" formControlName="keyword" class="form-control" placeholder="Search by ID, name, etc.">
+                  <button class="btn btn-outline-primary" type="submit">
+                    <i class="bi bi-search me-1"></i>Search
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Accounts List -->
+      <div class="row mb-3">
+        <div class="col-12">
+          <div class="card">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+              <span>Accounts List</span>
+              <span *ngIf="isLoading" class="spinner-border spinner-border-sm text-primary"></span>
+            </div>
+            <div class="card-body">
+              <div *ngIf="errorMessage" class="alert alert-danger">{{errorMessage}}</div>
+              
+              <table class="table table-striped table-hover">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Customer</th>
+                    <th>Balance</th>
+                    <th>Type</th>
+                    <th>Created Date</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let account of accounts">
+                    <td>{{account.accountId}}</td>
+                    <td>{{account.customerName}}</td>
+                    <td>{{account.balance | number : '1.2-2'}}</td>
+                    <td>{{account.accountType}}</td>
+                    <td>{{account.createdAt | date:'medium'}}</td>
+                    <td>
+                      <button (click)="selectAccount(account.accountId)" class="btn btn-sm btn-primary">
+                        <i class="bi bi-info-circle me-1"></i>Details
+                      </button>
+                    </td>
+                  </tr>
+                  <tr *ngIf="accounts.length === 0 && !isLoading">
+                    <td colspan="6" class="text-center">No accounts found</td>
+                  </tr>
+                </tbody>
+              </table>
+              
+              <!-- Pagination -->
+              <div *ngIf="totalPages > 1" class="d-flex justify-content-center mt-3">
+                <ul class="pagination">
+                  <li class="page-item" [class.disabled]="currentPage === 0">
+                    <a class="page-link" (click)="gotoPage(currentPage - 1)">Previous</a>
+                  </li>
+                  <li *ngFor="let page of [].constructor(totalPages); let i=index" 
+                      class="page-item" [class.active]="i === currentPage">
+                    <a class="page-link" (click)="gotoPage(i)">{{i + 1}}</a>
+                  </li>
+                  <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+                    <a class="page-link" (click)="gotoPage(currentPage + 1)">Next</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Selected Account Details -->
+      <div class="row" *ngIf="selectedAccount">
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-light">Account Information</div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>ID:</span><strong>{{selectedAccount.accountId}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Balance:</span><strong>{{selectedAccount.balance | number : '1.2-2'}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Owner:</span><strong>{{selectedAccount.customerName}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Type:</span><strong>{{selectedAccount.accountType}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Status:</span><strong>{{selectedAccount.status || 'Active'}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Created By:</span><strong>{{selectedAccount.createdBy || 'System'}}</strong>
+                </li>
+                <li class="list-group-item d-flex justify-content-between">
+                  <span>Created At:</span><strong>{{selectedAccount.createdAt | date:'medium'}}</strong>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="card">
+            <div class="card-header bg-light">Operations</div>
+            <div class="card-body">
+              <form [formGroup]="operationFormGroup" (ngSubmit)="handleAccountOperation()">
+                <div class="mb-3">
+                  <label class="form-label">Operation Type</label>
+                  <select formControlName="operationType" class="form-select">
+                    <option value="">--Select Operation--</option>
+                    <option value="DEBIT">DEBIT</option>
+                    <option value="CREDIT">CREDIT</option>
+                    <option value="TRANSFER">TRANSFER</option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Amount</label>
+                  <input type="number" formControlName="amount" class="form-control">
+                </div>
+                <div class="mb-3">
+                  <label class="form-label">Description</label>
+                  <textarea formControlName="description" class="form-control"></textarea>
+                </div>
+                <div class="mb-3" *ngIf="operationFormGroup.value.operationType=='TRANSFER'">
+                  <label class="form-label">Destination Account</label>
+                  <input type="text" formControlName="accountDestination" class="form-control">
+                </div>
+                <div class="d-grid">
+                  <button class="btn btn-success">Save Operation</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Operations History -->
+        <div class="col-md-12 mt-3">
+          <div class="card">
+            <div class="card-header bg-light">Operations History</div>
+            <div class="card-body">
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>ID</th><th>Date</th><th>Type</th><th>Amount</th><th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr *ngFor="let op of selectedAccount.accountOperationDTOS">
+                  <td>{{op.id}}</td>
+                  <td>{{op.operationDate | date : 'dd/MM/yyyy:HH:mm'}}</td>
+                  <td>{{op.type}}</td>
+                  <td>{{op.amount | number : '1.2-2'}}</td>
+                  <td>{{op.description}}</td>
+                </tr>
+                <tr *ngIf="selectedAccount.accountOperationDTOS?.length === 0">
+                  <td colspan="5" class="text-center">No operations found</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
