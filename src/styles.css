@@ -1,0 +1,76 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+/* Custom global styles */
+.full-width {
+  width: 100%;
+}
+
+.mat-card {
+  margin-bottom: 20px;
+}
+
+.content-container {
+  padding: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Dashboard card styles */
+.dashboard-card {
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+.dashboard-card-content {
+  padding: 16px;
+}
+
+.dashboard-stat {
+  font-size: 2rem;
+  font-weight: 500;
+}
+
+/* Table styles */
+.mat-table-container {
+  overflow-x: auto;
+  margin-bottom: 20px;
+}
+
+/* Form styles */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.form-field {
+  margin-bottom: 16px;
+}
+
+/* Button styles */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+}
