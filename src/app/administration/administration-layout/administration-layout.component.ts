@@ -30,11 +30,6 @@ export class AdministrationLayoutComponent {
       label: 'User Management', 
       icon: 'people', 
       route: '/admin/users' 
-    },
-    { 
-      label: 'System Settings', 
-      icon: 'settings', 
-      route: '/admin/settings' 
     }
   ];
 } 

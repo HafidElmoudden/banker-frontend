@@ -7,35 +7,29 @@
       <mat-icon>dashboard</mat-icon> Dashboard
     </a>
     
-    <a mat-button routerLink="/accounts" routerLinkActive="active-link">
-      <mat-icon>account_balance</mat-icon> Accounts
-    </a>
-    
-    <button mat-button [matMenuTriggerFor]="customersMenu">
-      <mat-icon>people</mat-icon> Customers <mat-icon>arrow_drop_down</mat-icon>
-    </button>
-    <mat-menu #customersMenu="matMenu">
-      <a mat-menu-item routerLink="/customers" routerLinkActive="active-link">
-        <mat-icon>search</mat-icon> Search customers
+    <ng-container *ngIf="isAdmin()">
+      <a mat-button routerLink="/accounts" routerLinkActive="active-link">
+        <mat-icon>account_balance</mat-icon> Accounts
       </a>
-      <a mat-menu-item routerLink="/new-customer" routerLinkActive="active-link">
-        <mat-icon>person_add</mat-icon> New customer
-      </a>
-    </mat-menu>
+      
+      <button mat-button [matMenuTriggerFor]="customersMenu">
+        <mat-icon>people</mat-icon> Customers <mat-icon>arrow_drop_down</mat-icon>
+      </button>
+      <mat-menu #customersMenu="matMenu">
+        <a mat-menu-item routerLink="/customers" routerLinkActive="active-link">
+          <mat-icon>search</mat-icon> Search customers
+        </a>
+        <a mat-menu-item routerLink="/new-customer" routerLinkActive="active-link">
+          <mat-icon>person_add</mat-icon> New customer
+        </a>
+      </mat-menu>
+    </ng-container>
     
     <!-- Admin only section -->
     <ng-container *ngIf="isAdmin()">
-      <button mat-button [matMenuTriggerFor]="adminMenu">
-        <mat-icon>admin_panel_settings</mat-icon> Administration <mat-icon>arrow_drop_down</mat-icon>
-      </button>
-      <mat-menu #adminMenu="matMenu">
-        <a mat-menu-item routerLink="/admin/users" routerLinkActive="active-link">
-          <mat-icon>manage_accounts</mat-icon> Manage Users
-        </a>
-        <a mat-menu-item routerLink="/admin/settings" routerLinkActive="active-link">
-          <mat-icon>settings</mat-icon> System Settings
-        </a>
-      </mat-menu>
+      <a mat-button routerLink="/admin/users" routerLinkActive="active-link">
+        <mat-icon>admin_panel_settings</mat-icon> Administration
+      </a>
     </ng-container>
   </ng-container>
   
